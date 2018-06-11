@@ -1,0 +1,19 @@
+{
+  "name": "fate-rpg",
+  "version": "0.0.1-SNAPSHOT",
+  "description": "kotlin/spring5/react/websockets",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Manegan/fate-rpg.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Manegan/fate-rpg/issues"
+  },
+  "homepage": "https://github.com/Manegan/fate-rpg#readme"
+}

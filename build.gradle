@@ -53,3 +53,15 @@ allOpen {
     annotation 'org.springframework.context.annotation.Configuration'
     annotation 'org.springframework.context.annotation.Bean'
 }
+
+task clientDependenciesDev(type: Exec) {
+    commandLine 'npm', 'install', '-D', 'mocha', 'jsdom', 'react-addons-test-utils', 'chai', 'sinon', 'enzyme'
+}
+
+task clientDependencies(type: Exec, dependsOn: 'clientDependenciesDev') {
+    commandLine 'npm', 'install', '-S', 'react', 'react-dom', 'babelify', 'babel-core', 'babel-preset-react', 'babel-preset-es2017'
+}
+
+task browserify(type: Exec) {
+    commandLine 'browserify', '-t', '[', 'babelify', ']', 'src/main/resources/app/app.js', '-o', 'src/main/resources/static/js/bundle.js'
+}
