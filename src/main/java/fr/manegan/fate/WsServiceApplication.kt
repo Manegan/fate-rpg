@@ -6,12 +6,20 @@ import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.io.ClassPathResource
 import org.springframework.integration.channel.PublishSubscribeChannel
 import org.springframework.integration.dsl.IntegrationFlows
 import org.springframework.integration.file.dsl.Files
 import org.springframework.messaging.Message
 import org.springframework.messaging.MessageHandler
 import org.springframework.web.reactive.HandlerMapping
+import org.springframework.web.reactive.function.BodyInserters
+import org.springframework.web.reactive.function.server.HandlerFunction
+import org.springframework.web.reactive.function.server.RequestPredicate
+import org.springframework.web.reactive.function.server.RequestPredicates
+import org.springframework.web.reactive.function.server.RouterFunction
+import org.springframework.web.reactive.function.server.RouterFunctions
+import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping
 import org.springframework.web.reactive.socket.WebSocketHandler
 import org.springframework.web.reactive.socket.WebSocketMessage
@@ -34,7 +42,15 @@ fun main(args: Array<String>) {
 class WebSocketConfiguration {
 
     @Bean
-    fun incomingFileFlow (@Value("file://\${HOME}/Desktop/in") f: File) =
+    fun routes() : RouterFunction<ServerResponse> {
+        return RouterFunctions.route(
+                RequestPredicates.GET("/"),
+                HandlerFunction { request -> ServerResponse.ok().body(BodyInserters.fromResource(ClassPathResource("static/index.html"))) }
+        )
+    }
+
+    @Bean
+    fun incomingFileFlow (@Value("file:///C:/Users/ISKANDAROFF/Desktop/in") f: File) =
             IntegrationFlows
                     .from(
                             Files
