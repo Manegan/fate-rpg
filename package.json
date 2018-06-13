@@ -4,6 +4,9 @@
   "description": "kotlin/spring5/react/websockets",
   "main": "index.js",
   "scripts": {
+    "dev": "webpack-dev-server --cconfig ./build/dev.config.js",
+    "build": "webpack --config ./build/webpack.config.js",
+    "prod": "webpack --config ./build/prod.config.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +18,31 @@
   "bugs": {
     "url": "https://github.com/Manegan/fate-rpg/issues"
   },
-  "homepage": "https://github.com/Manegan/fate-rpg#readme"
+  "homepage": "https://github.com/Manegan/fate-rpg#readme",
+  "devDependencies": {
+    "bili": "^3.1.2",
+    "chai": "^4.1.2",
+    "enzyme": "^3.3.0",
+    "jsdom": "^11.11.0",
+    "mocha": "^5.2.0",
+    "react-addons-test-utils": "^15.6.2",
+    "sinon": "^6.0.0",
+    "webpack": "^4.12.0",
+    "webpack-dev-server": "^3.1.4"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "babelify": "^8.0.0",
+    "browserify": "^16.2.2",
+    "react": "^16.4.0",
+    "react-dom": "^16.4.0",
+    "react-redux": "^5.0.7",
+    "react-router": "^4.3.1",
+    "react-router-dom": "^4.3.1",
+    "react-router-redux": "^4.0.8",
+    "redux": "^4.0.0"
+  }
 }
