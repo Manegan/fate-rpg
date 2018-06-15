@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import http from 'axios'
 
 class Application extends Component {
     render() {
