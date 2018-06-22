@@ -5,11 +5,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.ClassPathResource
-import org.springframework.web.reactive.HandlerMapping
+import org.springframework.messaging.simp.config.MessageBrokerRegistry
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.server.*
-import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping
-import org.springframework.web.reactive.socket.server.support.WebSocketHandlerAdapter
+import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker
+import org.springframework.web.socket.config.annotation.StompEndpointRegistry
+import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer
 
 @SpringBootApplication
 class WsServiceApplication
@@ -19,24 +20,22 @@ fun main(args: Array<String>) {
 }
 
 @Configuration
-class WebSocketConfiguration {
-
+@EnableWebSocketMessageBroker
+class WebSocketConfiguration : WebSocketMessageBrokerConfigurer {
     @Bean
-    fun routes() : RouterFunction<ServerResponse> {
+    fun routes(): RouterFunction<ServerResponse> {
         return RouterFunctions.route(
                 RequestPredicates.GET("/"),
-                HandlerFunction { request -> ServerResponse.ok().body(BodyInserters.fromResource(ClassPathResource("static/index.html"))) }
+                HandlerFunction { request -> ServerResponse.ok().body(BodyInserters.fromResource(ClassPathResource("/static/index.html"))) }
         )
     }
 
-    @Bean
-    fun wsha () = WebSocketHandlerAdapter()
+    override fun registerStompEndpoints(registry: StompEndpointRegistry?) {
+        registry!!.addEndpoint("/portfolio").withSockJS()
+    }
 
-    @Bean
-    fun hm (): HandlerMapping {
-        val suhm = SimpleUrlHandlerMapping()
-        suhm.order = 10
-        suhm.urlMap = mapOf("/ws/files" to wsha())
-        return suhm
+    override fun configureMessageBroker(registry: MessageBrokerRegistry?) {
+        registry!!.setApplicationDestinationPrefixes("/app")
+        registry.enableSimpleBroker("/topic")
     }
 }
