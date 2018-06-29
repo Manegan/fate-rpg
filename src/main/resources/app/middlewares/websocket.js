@@ -1,5 +1,4 @@
 import {overWS} from 'stompjs'
-import SockJS from 'sockjs'
 import * as types from '../constants/ActionTypes'
 
 class NullSocket {
@@ -16,8 +15,7 @@ function factory({messageToActionAdapter}) {
         return newt => action => {
             switch (action.type) {
                 case types.WEBSOCKET_CONNECT:
-                    const l = window.location
-                    socket = new SockJS(action.payload)
+                    socket = new WebSocket(action.payload)
                     stompClient = overWS(socket)
                     stompClient.connect("toto", "", () => dispatch({type: types.WEBSOCKET_CONNECT, payload: "Connected!"}))
                     stompClient.subscribe("/topic/greeting", m => dispatch(messageToActionAdapter(m) || {type: types.CHAT_MESSAGE, payload: m.body}))
