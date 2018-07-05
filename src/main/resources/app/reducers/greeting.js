@@ -5,13 +5,8 @@ var initialState = {
 }
 
 const greeting = (state = initialState, action) => {
-    debugger
     switch(action.type) {
-        case types.CHAT_MESSAGE:
-            return Object.assign({}, state, {
-                messages: state.messages.push(action.payload)
-            })
-        case types.WEBSOCKET_CONNECT:
+        case types.CHAT_MESSAGE || types.WEBSOCKET_CONNECT:
             return Object.assign({}, state, {
                 messages: state.messages.push(action.payload)
             })

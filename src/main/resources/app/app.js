@@ -10,6 +10,8 @@ import reducers from './reducers'
 
 import App from './components/Application.jsx'
 
+import {client} from 'websocket'
+
 const store = applyMiddleware(
     reduxThunk,
     websocket({messageToActionAdapter})

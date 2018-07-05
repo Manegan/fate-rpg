@@ -4,7 +4,7 @@ import {connectToFateServer} from '../actions'
 
 class Application extends Component {
     componentDidMount() {
-        this.props.connectToFateServer("/portfolio")
+        this.props.connectToFateServer("ws://localhost:8080/portfolio")
     }
 
     render() {

@@ -31,7 +31,7 @@ class WebSocketConfiguration : WebSocketMessageBrokerConfigurer {
     }
 
     override fun registerStompEndpoints(registry: StompEndpointRegistry?) {
-        registry!!.addEndpoint("/portfolio").withSockJS()
+        registry!!.addEndpoint("/portfolio")
     }
 
     override fun configureMessageBroker(registry: MessageBrokerRegistry?) {

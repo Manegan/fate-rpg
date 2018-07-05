@@ -4,4 +4,9 @@ build/
 gradle/
 out/
 node_modules/
-src/main/resources/static/js/bundle.js
+src/main/resources/static/js/
+src/main/resources/static/hot
+src/main/resources/static/mix-manifest.json
+yarn.lock
+hot
+mix-manifest.json
