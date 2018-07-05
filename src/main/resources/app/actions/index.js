@@ -18,6 +18,12 @@ export function connectToFateServer(url) {
     }
 }
 
+export function sendMessage(name) {
+    return dispatch => {
+        dispatch({type: WEBSOCKET_SEND, payload: name})
+    }
+}
+
 export function messageToActionAdapter(msg) {
     const event = JSON.parse(msg.data)
     if (eventToActionAdapters[event.type]) {

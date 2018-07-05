@@ -1,4 +1,4 @@
-import Stomp from 'stomp-client'
+import * as Stomp from '@stomp/stompjs'
 import * as types from '../constants/ActionTypes'
 
 class NullSocket {
@@ -15,9 +15,11 @@ function factory({messageToActionAdapter}) {
         return newt => action => {
             switch (action.type) {
                 case types.WEBSOCKET_CONNECT:
-                    stompClient = new Stomp(action.payload, 8080)
-                    stompClient.connect("", "", () => dispatch({type: types.WEBSOCKET_CONNECT, payload: "Connected!"}))
-                    stompClient.subscribe("/topic/greeting", m => dispatch(messageToActionAdapter(m) || {type: types.CHAT_MESSAGE, payload: m.body}))
+                    stompClient = Stomp.over(() => new WebSocket(action.payload))
+                    stompClient.connect("guest", "guest", () => {
+                        console.log("Connected! Now Subscribing...")
+                        stompClient.subscribe("/topic/greeting", m => dispatch(messageToActionAdapter(m) || {type: types.CHAT_MESSAGE, payload: m.body}))
+                    })
                     break
                 case types.WEBSOCKET_SEND:
                     stompClient.send("/app/greeting", {}, JSON.stringify(action.payload))
