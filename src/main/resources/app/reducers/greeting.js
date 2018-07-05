@@ -8,7 +8,7 @@ const greeting = (state = initialState, action) => {
     switch(action.type) {
         case types.CHAT_MESSAGE || types.WEBSOCKET_CONNECT:
             return Object.assign({}, state, {
-                messages: state.messages.push(action.payload)
+                messages: [action.payload, ...state.messages]
             })
         default:
             return state

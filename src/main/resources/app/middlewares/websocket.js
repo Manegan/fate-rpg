@@ -22,7 +22,7 @@ function factory({messageToActionAdapter}) {
                     })
                     break
                 case types.WEBSOCKET_SEND:
-                    stompClient.send("/app/greeting", {}, JSON.stringify(action.payload))
+                    stompClient.send("/app/greeting", {}, JSON.stringify({"type":types.CHAT_MESSAGE, "payload":action.payload}))
                     break
             }
             return newt(action)

@@ -1,13 +1,12 @@
 import {
     WEBSOCKET_CONNECT,
-    WEBSOCKET_SEND
+    WEBSOCKET_SEND,
+    CHAT_MESSAGE
 } from '../constants/ActionTypes'
 
-export const CHAT_MESSAGE = 'CHAT_MESSAGE'
-
 const eventToActionAdapters = {
-    CHAT_MESSAGE: ({id, timestamp, payload: {user, message}}) =>
-    ({type: types.MESSAGE_RECEIVED, payload: {id, timestamp, user, message}}),
+    CHAT_MESSAGE: ({payload}) =>
+    ({type: CHAT_MESSAGE, payload}),
     USER_STATS: ({payload}) => ({type: USER_STATS, payload}),
     USER_LEFT: ({payload}) => ({type: USER_LEFT, payload})
 }
@@ -25,7 +24,7 @@ export function sendMessage(name) {
 }
 
 export function messageToActionAdapter(msg) {
-    const event = JSON.parse(msg.data)
+    const event = JSON.parse(msg.body)
     if (eventToActionAdapters[event.type]) {
         return eventToActionAdapters[event.type](event)
     }

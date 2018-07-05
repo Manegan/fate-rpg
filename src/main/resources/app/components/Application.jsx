@@ -16,11 +16,15 @@ class Application extends Component {
     }
 
     sendMessage() {
-        this.props.sendMessage()
+        this.props.sendMessage(this.state.name)
     }
 
     changeName(e) {
         this.setState({name: e.target.value})
+    }
+
+    renderMessages() {
+        return (this.props.messages || []).map(value => <div>{value}</div>)
     }
 
     render() {
@@ -31,8 +35,11 @@ class Application extends Component {
                 value={this.state.name}
                 onChange={this.changeName.bind(this)}/>
             <button onClick={this.sendMessage.bind(this)}>Send greetings</button>
+            {this.renderMessages()}
         </div>)
     }
 }
 
-export default connect(null, { connectToFateServer, sendMessage })(Application)
+const mapStateToProps = state => { return { messages: state.greeting.messages } }
+
+export default connect(mapStateToProps, { connectToFateServer, sendMessage })(Application)

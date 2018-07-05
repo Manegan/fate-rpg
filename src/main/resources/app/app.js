@@ -15,7 +15,8 @@ import {client} from 'websocket'
 const store = applyMiddleware(
     reduxThunk,
     websocket({messageToActionAdapter})
-)(createStore)(reducers)
+)(createStore)(reducers,
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())
 
 const renderApp = (Component) => (
     render(

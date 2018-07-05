@@ -20,7 +20,8 @@ mix
         }
     })
     .extract(['websocket'])
-    .sourceMaps();
+    .sourceMaps()
+    .disableNotifications();
 
 // Full API
 // mix.js(src, output);
