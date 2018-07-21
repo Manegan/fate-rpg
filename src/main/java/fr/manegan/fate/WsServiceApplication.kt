@@ -1,18 +1,19 @@
 package fr.manegan.fate
 
+import com.mongodb.MongoClient
+import fr.manegan.fate.repositories.RoomReactiveCrudRepo
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.ClassPathResource
-import org.springframework.messaging.simp.config.MessageBrokerRegistry
+import org.springframework.data.mongodb.config.AbstractMongoConfiguration
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.server.*
-import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker
-import org.springframework.web.socket.config.annotation.StompEndpointRegistry
-import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer
 
 @SpringBootApplication
+@EnableMongoRepositories
 class WsServiceApplication
 
 fun main(args: Array<String>) {
@@ -20,22 +21,27 @@ fun main(args: Array<String>) {
 }
 
 @Configuration
-@EnableWebSocketMessageBroker
-class WebSocketConfiguration : WebSocketMessageBrokerConfigurer {
+@EnableMongoRepositories
+class FateRPGConfiguration: AbstractMongoConfiguration() {
+    override fun getDatabaseName(): String {
+        return "fate-store"
+    }
+
+    override fun mongoClient(): MongoClient {
+        return MongoClient()
+    }
+
+    override fun getMappingBasePackages(): MutableCollection<String> {
+        var list: MutableCollection<String> = MutableList(0, { index -> index.toString() })
+        list.add("fr.manegan.fate.repositories")
+        return list
+    }
+
     @Bean
     fun routes(): RouterFunction<ServerResponse> {
         return RouterFunctions.route(
                 RequestPredicates.GET("/"),
                 HandlerFunction { request -> ServerResponse.ok().body(BodyInserters.fromResource(ClassPathResource("/static/index.html"))) }
         )
-    }
-
-    override fun registerStompEndpoints(registry: StompEndpointRegistry?) {
-        registry!!.addEndpoint("/portfolio").setAllowedOrigins("*")
-    }
-
-    override fun configureMessageBroker(registry: MessageBrokerRegistry?) {
-        registry!!.setApplicationDestinationPrefixes("/app")
-        registry.enableSimpleBroker("/topic")
     }
 }
