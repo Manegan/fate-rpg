@@ -1,17 +1,23 @@
-import { observable, action } from 'mobx'
+import { observable, action, computed} from 'mobx'
 
 class roomStore {
     @observable eventSource = null
     @observable data = []
 
-    @action connect = id => {
+    @action connect(id) {
         this.eventSource = new EventSource(`//localhost:8080/fate/test/${id}`)
-        this.eventSource.onopen = param => console.log("connected! ", param)
-        this.eventSource.onmessage = this.updateData()
-        this.eventSource.onerror = () => console.log("error oocured...")
+        // this.eventSource.onopen = param => console.log("connected! ", param)
+        this.eventSource.onmessage = this.updateData.bind(this)
     }
 
-    @action updateData = msg => this.data = this.data.replace(msg, ...this.data)
+    @action updateData(msg) {
+        console.log(this.data)
+        this.data = observable([msg.data, ...this.data.slice()])
+    }
+
+    @computed get readyStateIsOk() {
+        return this.eventSource
+    }
 
 }
 

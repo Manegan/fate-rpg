@@ -6,7 +6,7 @@ import Button from '@material-ui/core/Button'
 
 @observer
 class Application extends Component {
-    @observable currentRoom = ""
+    @observable currentRoom = "0"
     @observable msg = ""
 
     constructor(props) {
@@ -14,10 +14,9 @@ class Application extends Component {
     }
 
     renderMessages() {
-        let render = (this.props.store.data || []).map(value => <div>{value}</div>)
-        console.log(this.props.store.eventSource.readyState)
-        if (this.props.store.eventSource.readyState === 1) {
-            render.unshift(<Button onClick={this.sendMessage.bind(this)}>Send</Button>)
+        let render = this.props.store.data.slice().map((value,i) => <div key={i}>{value}</div>)
+        if (this.props.store.readyStateIsOk) {
+            render.unshift(<Button onClick={(e) => this.sendMessage(e)}>Send</Button>)
             render.unshift(<Input type="text" placeholder="Your message" onChange={this.changeMsg.bind(this)}/>)
         }
         return render
@@ -31,8 +30,7 @@ class Application extends Component {
         this.msg = e.target.value
     }
 
-    sendMessage() {
-        console.log(this.msg)
+    sendMessage(e) {
         fetch(`http://localhost:8080/fate/test/${this.currentRoom}`, {
             method: "post",
             body: JSON.stringify(this.msg)
@@ -48,8 +46,8 @@ class Application extends Component {
                 type="text"
                 value={this.currentRoom}
                 onChange={this.changeId.bind(this)}/>
-            <Button onClick={this.props.store.connect(this.currentRoom)}>Connect</Button>
-            {this.renderMessages.bind(this)}
+            <Button onClick={(e) => this.props.store.connect(this.currentRoom)}>Connect</Button>
+            {this.renderMessages()}
         </div>)
     }
 }

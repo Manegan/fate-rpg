@@ -18,7 +18,7 @@ class SseController {
 
     @PostMapping("/test/{id}")
     fun postMessage(@PathVariable id: Int, @RequestBody msg: String): Mono<Room> {
-        return repo.findById(id)
+        return repo.findByRoomId(id)
                 .doOnSuccess({r -> r.messages = listOf(Message(msg), *r.messages.toTypedArray())})
                 .doOnSuccess({r -> repo.save(r)})
     }
@@ -27,10 +27,7 @@ class SseController {
     fun getMessages(@PathVariable id: Int): SseEmitter {
         val sseEmitter = SseEmitter(60 * 1000L)
         var msgsFlux = repo.findMessagesById(id)
-        msgsFlux.subscribe({ m -> sseEmitter.send(m) })
-//                .subscribe({ msg -> sseEmitter.send(msg) },
-//                        sseEmitter::completeWithError,
-//                        sseEmitter::complete)
+        msgsFlux.subscribe({ m -> System.out.println(m);sseEmitter.send(m) })
         sseEmitter.send("hello")
         return sseEmitter
     }
