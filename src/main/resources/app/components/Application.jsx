@@ -9,15 +9,25 @@ class Application extends Component {
     @observable currentRoom = "0"
     @observable msg = ""
 
+    chatRoomStyle={
+        height: '400px',
+        overflowY: 'scroll'
+    }
+
     constructor(props) {
         super(props)
     }
 
     renderMessages() {
         let render = this.props.store.data.slice().map((value,i) => <div key={i}>{value}</div>)
+        return render
+    }
+
+    renderMsgTextBox() {
+        let render = []
         if (this.props.store.readyStateIsOk) {
-            render.unshift(<Button onClick={(e) => this.sendMessage(e)}>Send</Button>)
-            render.unshift(<Input type="text" placeholder="Your message" onChange={this.changeMsg.bind(this)}/>)
+            render.push(<Input type="text" placeholder="Your message" onChange={this.changeMsg.bind(this)}/>)
+            render.push(<Button onClick={() => this.sendMessage()}>Send</Button>)
         }
         return render
     }
@@ -30,10 +40,10 @@ class Application extends Component {
         this.msg = e.target.value
     }
 
-    sendMessage(e) {
+    sendMessage() {
         fetch(`http://localhost:8080/fate/test/${this.currentRoom}`, {
             method: "post",
-            body: JSON.stringify(this.msg)
+            body: this.msg
         }).then(res => {
             console.log(res)
         })
@@ -46,8 +56,12 @@ class Application extends Component {
                 type="text"
                 value={this.currentRoom}
                 onChange={this.changeId.bind(this)}/>
-            <Button onClick={(e) => this.props.store.connect(this.currentRoom)}>Connect</Button>
-            {this.renderMessages()}
+            <Button onKeyPress={(e) => {if (e.key === "enter") this.props.store.connect(this.currentRoom)}}
+                    onClick={() => this.props.store.connect(this.currentRoom)}>Connect</Button>
+            <div style={this.chatRoomStyle}>
+                {this.renderMessages()}
+            </div>
+            {this.renderMsgTextBox()}
         </div>)
     }
 }

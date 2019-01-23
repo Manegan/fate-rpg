@@ -1,19 +1,23 @@
 package fr.manegan.fate
 
-import com.mongodb.MongoClient
-import fr.manegan.fate.repositories.RoomReactiveCrudRepo
+import com.mongodb.reactivestreams.client.MongoClient
+import com.mongodb.reactivestreams.client.MongoClients
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.ClassPathResource
-import org.springframework.data.mongodb.config.AbstractMongoConfiguration
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories
-import org.springframework.web.reactive.function.BodyInserters
-import org.springframework.web.reactive.function.server.*
+import org.springframework.data.mongodb.config.AbstractReactiveMongoConfiguration
+import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories
+import org.springframework.web.reactive.function.BodyInserters.fromResource
+import org.springframework.web.reactive.function.server.HandlerFunction
+import org.springframework.web.reactive.function.server.RequestPredicates.GET
+import org.springframework.web.reactive.function.server.RouterFunction
+import org.springframework.web.reactive.function.server.RouterFunctions
+import org.springframework.web.reactive.function.server.ServerResponse
+import org.springframework.web.reactive.function.server.ServerResponse.ok
 
 @SpringBootApplication
-@EnableMongoRepositories
 class WsServiceApplication
 
 fun main(args: Array<String>) {
@@ -21,27 +25,22 @@ fun main(args: Array<String>) {
 }
 
 @Configuration
-@EnableMongoRepositories
-class FateRPGConfiguration: AbstractMongoConfiguration() {
-    override fun getDatabaseName(): String {
-        return "fate-store"
-    }
+@EnableReactiveMongoRepositories
+class FateRPGConfiguration: AbstractReactiveMongoConfiguration() {
+    override fun getDatabaseName(): String = "test"
 
-    override fun mongoClient(): MongoClient {
-        return MongoClient()
-    }
+    override fun reactiveMongoClient(): MongoClient = MongoClients.create()
 
     override fun getMappingBasePackages(): MutableCollection<String> {
-        var list: MutableCollection<String> = MutableList(0, { index -> index.toString() })
+        val list: MutableCollection<String> = MutableList(0, { index -> index.toString() })
         list.add("fr.manegan.fate.repositories")
         return list
     }
 
     @Bean
-    fun routes(): RouterFunction<ServerResponse> {
-        return RouterFunctions.route(
-                RequestPredicates.GET("/"),
-                HandlerFunction { request -> ServerResponse.ok().body(BodyInserters.fromResource(ClassPathResource("/static/index.html"))) }
-        )
-    }
+    fun routes(): RouterFunction<ServerResponse> =
+            RouterFunctions.route(
+                GET("/"),
+                HandlerFunction { request -> ok().body(fromResource(ClassPathResource("/static/index.html"))) }
+            )
 }

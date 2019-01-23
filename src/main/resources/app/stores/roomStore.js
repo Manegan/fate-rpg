@@ -5,14 +5,13 @@ class roomStore {
     @observable data = []
 
     @action connect(id) {
+        this.data = []
         this.eventSource = new EventSource(`//localhost:8080/fate/test/${id}`)
-        // this.eventSource.onopen = param => console.log("connected! ", param)
         this.eventSource.onmessage = this.updateData.bind(this)
     }
 
     @action updateData(msg) {
-        console.log(this.data)
-        this.data = observable([msg.data, ...this.data.slice()])
+        this.data.push(msg.data)
     }
 
     @computed get readyStateIsOk() {
